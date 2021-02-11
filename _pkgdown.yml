@@ -1,0 +1,18 @@
+title: systemPipeATACseq
+url: https://www.dcassol.com/systemPipeATACseq/
+authors:
+   Daniela Cassol:
+     href: https://www.dcassol.com/
+home:
+  links:
+  - text: Download from Github
+    href: https://github.com/dcassol/systemPipeATACseq/
+  - text: Report a bug
+    href: https://github.com/dcassol/systemPipeATACseq/issues
+template:
+  params:
+    ganalytics: G-CCMXLYXWYV
+    bootswatch: flatly
+#    docsearch:
+#      api_key: API_KEY
+#      index_name: INDEX_NAME
