@@ -29,27 +29,44 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
       - uses: r-lib/actions/setup-r@master
         with:
           r-version: ${{ matrix.config.r }}
-
       - uses: r-lib/actions/setup-pandoc@master
-
       - name: Query dependencies
         run: |
           install.packages('remotes')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
         shell: Rscript {0}
-
-      - name: Cache R packages
-        if: runner.os != 'Windows'
-        uses: actions/cache@v1
+      - name: Cache R packages Linux
+#       if: runner.os != 'Windows'
+ #       uses: actions/cache@v2
+  #      with:
+   #       path: ${{ env.R_LIBS_USER }}
+    #      key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ hashFiles('.github/depends.Rds') }}
+     #     restore-keys: ${{ runner.os }}-r-${{ matrix.config.r }}- 
+        if: startsWith(runner.os, 'Linux')
+        uses: actions/cache@v2
+        with: 
+          path: ~/.local/share/renv
+          key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+          restore-keys: ${{ runner.os }}-renv-
+      - name: Cache R packages macOS
+        if: startsWith(runner.os, 'macOS')
+        uses: actions/cache@v2
         with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-r-${{ matrix.config.r }}-
-
+          path: ~/Library/Application Support/renv
+          key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-renv-
+      - name: Cache R packages Windows
+        if: startsWith(runner.os, 'Windows') 
+        uses: actions/cache@v2
+        with:
+          path: ~\AppData\Local\renv
+          key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-renv-
       - name: Install system dependencies
         if: runner.os == 'Linux'
         env:
@@ -57,7 +74,6 @@ jobs:
         run: |
           sudo apt-get install libcurl4-openssl-dev
           sudo apt-get install libv8-dev
-
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
@@ -65,13 +81,11 @@ jobs:
           install.packages(c("BiocManager"))
           BiocManager::install("systemPipeR")
         shell: Rscript {0}
-
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: rcmdcheck::rcmdcheck(build_args = c('--compact-vignettes=gs+qpdf'), args = c("--no-manual", "--no-build-vignettes", "--timings"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
-
       - name: Upload check results
         if: failure()
         uses: actions/upload-artifact@master
