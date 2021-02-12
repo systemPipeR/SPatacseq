@@ -9,7 +9,7 @@ Description: This package provides a pre-configured
 License: Artistic-2.0
 URL: https://github.com/systemPipeR/systemPipeATACseq
 Imports: 
-    systemPipeR (>= 1.25.0)
+    systemPipeR
 Suggests: 
     BiocStyle,
     knitr,
