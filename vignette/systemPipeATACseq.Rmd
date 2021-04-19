@@ -28,7 +28,7 @@ word-wrap: initial !important;
 
 <!--
 - Compile from command-line
-Rscript -e "rmarkdown::render('systemPipeATACseq.Rmd', c('BiocStyle::html_document'), clean=F); knitr::knit('systemPipeATACseq.Rmd', tangle=TRUE)"; Rscript -e "rmarkdown::render('systemPipeATACseq.Rmd', c('BiocStyle::pdf_document'))"
+Rscript -e "rmarkdown::render('SPatacseq.Rmd', c('BiocStyle::html_document'), clean=F); knitr::knit('SPatacseq.Rmd', tangle=TRUE)"; Rscript -e "rmarkdown::render('SPatacseq.Rmd', c('BiocStyle::pdf_document'))"
 -->
 
 ```{r style, echo = FALSE, results = 'asis'}
@@ -42,6 +42,7 @@ knitr::opts_chunk$set(
 
 ```{r setup, echo=FALSE, message=FALSE, wwarning=FALSE, eval=FALSE}
 suppressPackageStartupMessages({
+  library(systemPipeR)
   
 })
 ```
@@ -55,11 +56,11 @@ suppressPackageStartupMessages({
 ```{r introFigure, include=TRUE, fig.align="center", fig.cap=fig1, echo=FALSE}
 fig1 <- "ATAC-seq schematic methodology to chromatin accessibility using the Tn5 transposase.
          In the open chromatin (line between nucleosomes in gray), Tn5 transposase (green) cuts          the regions and insert the adaptors (red and blue) to generate sequencing-library
-        fragments. [@Buenrostro2013]"
+        fragments. [@Buenrostro2013-ap]"
 knitr::include_graphics("Buenrostro2013.png")
 ```
 
-`systemPipeATACseq` pipeline will provide the steps to perform an ATAC-seq analysis. The pipeline show alternatives to trim adapters, check raw sequence read quality, alignment to the reference genome, call peaks, and visualization report.
+`SPatacseq` pipeline will provide the steps to perform an ATAC-seq analysis. The pipeline show alternatives to trim adapters, check raw sequence read quality, alignment to the reference genome, call peaks, and visualization report.
 
 # Samples and environment settings
 
@@ -101,7 +102,7 @@ them.
 
 ### Structure of *`targets`* file for single-end (SE) samples
 
-``` r
+```{r}
 targetspath <- system.file("extdata", "targets.txt", package = "systemPipeR")
 read.delim(targetspath, comment.char = "#")[1:4, ]
 ```
@@ -251,16 +252,92 @@ fqlist <- bplapply(seq(along=trim), f, BPPARAM = param)
 seeFastqPlot(unlist(fqlist, recursive=FALSE))
 ```
 
-## NGS Alignment software
+# Read Alignment
 
-After quality control, the sequence reads can be aligned to a reference genome or 
-transcriptome database. The following sessions present some NGS sequence alignment 
-software. Select the most accurate aligner and determining the optimal parameter 
-for your custom data set project.
+After quality control, the sequence reads can be aligned to a reference genome or miRNA database. The following sessions present some NGS sequence alignment software. Select the most accurate aligner and determining the optimal parameter for your custom data set project.
 
-For all the following examples, it is necessary to install the respective software 
-and export the `PATH` accordingly. If it is available [Environment Module](http://modules.sourceforge.net/) 
-in the system, you can load all the request software with _`moduleload(args)`_ function.
+For all the following examples, it is necessary to install the respective software and export the PATH accordingly. If it is available Environment Module in the system, you can load all the request software with `moduleload(modules(idx))` function.
+
+## Alignment with _`Bowtie2`_ 
+
+The following example runs _`Bowtie2`_ as a single process without submitting it to a cluster.
+
+Building the index:
+
+```{r bowtie2_index, eval=FALSE}
+dir_path <- system.file("extdata/cwl/bowtie2/bowtie2-idx", package="SPatacseq")
+idx <- loadWorkflow(targets=NULL, wf_file="bowtie2-index.cwl", input_file="bowtie2-index.yml", dir_path=dir_path)
+idx <- renderWF(idx)
+idx
+cmdlist(idx)
+
+## Run in single machine
+runCommandline(idx, make_bam = FALSE)
+```
+
+Building all the command-line:
+
+```{r bowtie2_SYSargs2, eval=FALSE}
+targetspath <- system.file("extdata", "targets_cutadapt.txt", package = "SPatacseq")
+dir_path <- system.file("extdata/cwl/bowtie2/bowtie2-mi", package = "SPatacseq")
+bowtie <- loadWorkflow(targets = targetspath, wf_file = "bowtie2-mapping-mi.cwl", 
+    input_file = "bowtie2-mapping-mi.yml", dir_path = dir_path)
+bowtie <- renderWF(bowtie, inputvars = c(FileTrim = "_FASTQ_PATH1_", SampleName = "_SampleName_"))
+bowtie
+cmdlist(bowtie)[1:2]
+output(bowtie)[1:2]
+```
+
+Please note that each experiment and/or each species may require an optimization 
+of the parameters used. Here is an example where no mismatches are allowed, 
+and `-k` mode is used. The `-k` represents the maximum number of alignments to
+report per read. By default, Bowtie2 reports at most one alignment per read, 
+and if multiple equivalent alignments exist, it chooses one randomly.
+There is indicative that `Bowtie2` with very sensitive 
+local (`--very-sensitive-local`) argument provides better accuracy and generates 
+smaller `P-values` for true positives [@Ziemann2016-mp].
+
+Running all the jobs to computing nodes.
+
+```{r bowtie2_cluster, eval=FALSE}
+resources <- list(walltime=120, ntasks=1, ncpus=4, memory=1024) 
+reg <- clusterRun(bowtie, FUN = runCommandline, more.args = list(args=bowtiePE, dir = FALSE), 
+    conffile = ".batchtools.conf.R", template = "batchtools.slurm.tmpl", 
+    Njobs = 6, runid = "01", resourceList = resources)
+getStatus(reg = reg)
+bowtie <- output_update(bowtie, dir = FALSE, replace = TRUE, extension = c(".sam", ".bam"))
+```
+
+Alternatively, it possible to run all the jobs in a single machine.
+
+```{r bowtie2_sm, eval=FALSE}
+bowtie <- runCommandline(bowtie, make_bam=TRUE)
+systemPipeR:::check.output(bowtie)
+```
+
+Create new targets file.
+
+```{r writeTargetsout_bowtie, eval=FALSE}
+names(clt(bowtie))
+writeTargetsout(x=bowtie, file="default", step = 1, 
+                new_col = "bowtie", new_col_output_index = 1, overwrite = TRUE)
+```
+
+### Read and alignment count stats
+
+Generate a table of read and alignment counts for all samples.
+
+```{r read_stats, eval=FALSE}
+read_statsDF <- alignStats(bowtie, subset = "FileTrim")
+write.table(read_statsDF, "results/alignStats_bowtie.xls", row.names = FALSE, quote = FALSE, 
+    sep = "\t")
+```
+
+The following shows the first four lines of the sample alignment stats file provided by the systemPipeR package. 
+```{r read_stats_show, eval=TRUE}
+table <- system.file("extdata", "alignStats_bowtie.xls", package = "SPmirnaseq")
+showDT(read.table(table, header = TRUE))## system
+```
 
 ### Alignment with _`BWA-MEM`_ (_e.g._ for VAR-Seq)
 
@@ -311,6 +388,359 @@ writeTargetsout(x=bwaPE, file="default", step = 1,
                 new_col = "bwaPE", new_col_output_index = 1, overwrite = TRUE)
 ```
 
+## Create symbolic links for viewing BAM files in IGV
+
+The `symLink2bam` function creates symbolic links to view the BAM alignment files in a
+genome browser such as IGV without moving these large files to a local
+system. The corresponding URLs are written to a file with a path
+specified under `urlfile`, here `IGVurl.txt`. Please replace the directory and the user name. 
+
+```{r symbol_links, eval=FALSE}
+symLink2bam(sysargs=args, htmldir=c("~/.html/", "somedir/"), 
+            urlbase="http://cluster.hpcc.ucr.edu/~tgirke/", 
+            urlfile="./results/IGVurl.txt")
+```
+
+# Utilities for coverage data
+
+The following introduces several utilities useful for ChIP-Seq data. They are not part of the actual workflow.
+
+## Rle object stores coverage information
+
+```{r rle_object, eval=FALSE}
+library(rtracklayer); library(GenomicRanges)
+library(Rsamtools); library(GenomicAlignments)
+outpaths <- subsetWF(args , slot="output", subset=1, index=1)
+aligns <- readGAlignments(outpaths[1])
+cov <- coverage(aligns)
+cov
+```
+
+## Resizing aligned reads
+
+```{r resize_align, eval=FALSE}
+trim(resize(as(aligns, "GRanges"), width = 200))
+```
+
+## Naive peak calling
+
+```{r rle_slice, eval=FALSE}
+islands <- slice(cov, lower = 15)
+islands[[1]]
+```
+
+## Plot coverage for defined region
+
+```{r plot_coverage, eval=FALSE}
+library(ggbio)
+myloc <- c("Chr1", 1, 100000)
+ga <- readGAlignments(outpaths[1], use.names=TRUE,
+                      param=ScanBamParam(which=GRanges(myloc[1], 
+                        IRanges(as.numeric(myloc[2]), as.numeric(myloc[3])))))
+autoplot(ga, aes(color = strand, fill = strand), facets = strand ~ seqnames, stat = "coverage")
+```
+
+# Peak calling with MACS2
+
+## Merge BAM files of replicates prior to peak calling
+
+Merging BAM files of technical and/or biological replicates can improve
+the sensitivity of the peak calling by increasing the depth of read
+coverage. The `mergeBamByFactor` function merges BAM files based on grouping information
+specified by a `factor`, here the `Factor` column of the imported targets file. It 
+also returns an updated `SYSargs2` object containing the paths to the
+merged BAM files as well as to any unmerged files without replicates.
+This step can be skipped if merging of BAM files is not desired.
+
+```{r merge_bams, eval=FALSE}
+dir_path <- system.file("extdata/cwl/mergeBamByFactor", package="systemPipeR")
+args <- loadWF(targets = "targets_bam.txt", wf_file = "merge-bam.cwl", 
+    input_file = "merge-bam.yml", dir_path = dir_path)
+args <- renderWF(args, inputvars = c(FileName = "_BAM_PATH_", SampleName = "_SampleName_"))
+
+args_merge <- mergeBamByFactor(args=args, overwrite=TRUE)
+writeTargetsout(x=args_merge, file="targets_mergeBamByFactor.txt", step = 1, 
+                new_col = "FileName", new_col_output_index = 1, overwrite = TRUE )
+```
+
+```{r call_peaks_macs_envVar_settings, eval=FALSE}
+# Skip if a module system is not used
+module("list")
+module("unload", "miniconda2")
+module("load", "python/2.7.14") # Make sure to set up your enviroment variable for MACS2 
+```
+
+## Peak calling without input/reference sample
+
+MACS2 can perform peak calling on ChIP-Seq data with and without input
+samples [@Zhang2008-pc]. The following performs peak calling without
+input on all samples specified in the corresponding `args` object. Note, due to
+the small size of the sample data, MACS2 needs to be run here with the
+`nomodel` setting. For real data sets, users want to remove this parameter 
+in the corresponding `*.param` file(s).
+
+```{r call_peaks_macs_noref, eval=FALSE}
+dir_path <- system.file("extdata/cwl/MACS2/MACS2-noinput/", package="systemPipeR")
+args <- loadWF(targets = "targets_mergeBamByFactor.txt", wf_file = "macs2.cwl", 
+    input_file = "macs2.yml", dir_path = dir_path)
+args <- renderWF(args, inputvars = c(FileName = "_FASTQ_PATH1_", SampleName = "_SampleName_"))
+
+runCommandline(args, make_bam = FALSE, force=T)
+outpaths <- subsetWF(args, slot="output", subset=1, index=1)
+file.exists(outpaths)
+writeTargetsout(x=args, file="targets_macs.txt", step = 1, 
+                new_col = "FileName", new_col_output_index = 1, overwrite = TRUE )
+```
+
+## Peak calling with input/reference sample
+
+To perform peak calling with input samples, they can be most
+conveniently specified in the `SampleReference` column of the initial
+`targets` file. The `writeTargetsRef` function uses this information to create a `targets` 
+file intermediate for running MACS2 with the corresponding input samples.
+
+```{r call_peaks_macs_withref, eval=FALSE}
+writeTargetsRef(infile="targets_mergeBamByFactor.txt", 
+                outfile="targets_bam_ref.txt", silent=FALSE, overwrite=TRUE)
+dir_path <- system.file("extdata/cwl/MACS2/MACS2-input/", package="systemPipeR")
+args_input <- loadWF(targets = "targets_bam_ref.txt", wf_file = "macs2-input.cwl", 
+    input_file = "macs2.yml", dir_path = dir_path)
+args_input <- renderWF(args_input, inputvars = c(FileName1 = "_FASTQ_PATH1_", FileName2 = "_FASTQ_PATH2_", SampleName = "_SampleName_"))
+cmdlist(args_input)[1]
+## Run
+args_input <- runCommandline(args_input, make_bam = FALSE, force=T)
+outpaths_input <- subsetWF(args_input , slot="output", subset=1, index=1)
+file.exists(outpaths_input)
+writeTargetsout(x=args_input, file="targets_macs_input.txt", step = 1, 
+                new_col = "FileName", new_col_output_index = 1, overwrite = TRUE )
+```
+
+The peak calling results from MACS2 are written for each sample to
+separate files in the `results` directory. They are named after the corresponding
+files with extensions used by MACS2.
+
+## Identify consensus peaks
+
+The following example shows how one can identify consensus preaks among two peak sets sharing either a minimum absolute overlap and/or minimum relative overlap using the `subsetByOverlaps` or `olRanges` functions, respectively. Note, the latter is a custom function imported below by sourcing it.
+
+```{r consensus_peaks, eval=FALSE}
+# source("http://faculty.ucr.edu/~tgirke/Documents/R_BioCond/My_R_Scripts/rangeoverlapper.R")
+outpaths <- subsetWF(args , slot="output", subset=1, index=1) ## escolher um dos outputs index
+peak_M1A <- outpaths["M1A"]
+peak_M1A <- as(read.delim(peak_M1A, comment="#")[,1:3], "GRanges")
+peak_A1A <- outpaths["A1A"]
+peak_A1A <- as(read.delim(peak_A1A, comment="#")[,1:3], "GRanges")
+(myol1 <- subsetByOverlaps(peak_M1A, peak_A1A, minoverlap=1)) 
+            # Returns any overlap
+myol2 <- olRanges(query=peak_M1A, subject=peak_A1A, output="gr") 
+            # Returns any overlap with OL length information
+myol2[values(myol2)["OLpercQ"][,1]>=50] 
+            # Returns only query peaks with a minimum overlap of 50%
+```
+
+# Annotate peaks with genomic context
+
+## Annotation with `ChIPpeakAnno` package
+
+The following annotates the identified peaks with genomic context information using the `ChIPpeakAnno` and `ChIPseeker` packages, respectively [@Zhu2010-zo; @Yu2015-xu].
+
+```{r chip_peak_anno, eval=FALSE}
+library(ChIPpeakAnno); library(GenomicFeatures)
+dir_path <- system.file("extdata/cwl/annotate_peaks", package="systemPipeR")
+args <- loadWF(targets = "targets_macs.txt", wf_file = "annotate-peaks.cwl", 
+    input_file = "annotate-peaks.yml", dir_path = dir_path)
+args <- renderWF(args, inputvars = c(FileName = "_FASTQ_PATH1_", SampleName = "_SampleName_"))
+
+txdb <- makeTxDbFromGFF(file="data/tair10.gff", format="gff", dataSource="TAIR", 
+                        organism="Arabidopsis thaliana")
+ge <- genes(txdb, columns=c("tx_name", "gene_id", "tx_type")) 
+for(i in seq(along=args)) {
+    peaksGR <- as(read.delim(infile1(args)[i], comment="#"), "GRanges")
+    annotatedPeak <- annotatePeakInBatch(peaksGR, AnnotationData=genes(txdb))
+    df <- data.frame(as.data.frame(annotatedPeak), 
+                     as.data.frame(values(ge[values(annotatedPeak)$feature,])))
+    outpaths <- subsetWF(args , slot="output", subset=1, index=1)
+    write.table(df, outpaths[i], quote=FALSE, row.names=FALSE, sep="\t")
+}
+writeTargetsout(x=args, file="targets_peakanno.txt", step = 1, 
+                new_col = "FileName", new_col_output_index = 1, overwrite = TRUE )
+```
+
+```{r chip_peak_anno_full_annotation, include=FALSE, eval=FALSE}
+## Perform previous step with full genome annotation from Biomart
+# txdb <- makeTxDbFromBiomart(biomart = "plants_mart", dataset = "athaliana_eg_gene", host="plants.ensembl.org")
+# tx <- transcripts(txdb, columns=c("tx_name", "gene_id", "tx_type"))
+# ge <- genes(txdb, columns=c("tx_name", "gene_id", "tx_type")) # works as well
+# seqlevels(ge) <- c("Chr1", "Chr2", "Chr3", "Chr4", "Chr5", "ChrC", "ChrM")
+# table(mcols(tx)$tx_type)
+# tx <- tx[!duplicated(unstrsplit(values(tx)$gene_id, sep=","))] # Keeps only first transcript model for each gene]
+# annotatedPeak <- annotatePeakInBatch(peaksGR, AnnotationData = tx)
+```
+
+The peak annotation results are written for each peak set to separate
+files in the `results` directory. They are named after the corresponding peak
+files with extensions specified in the `annotate_peaks.param` file, 
+here `*.peaks.annotated.xls`.
+
+## Annotation with `ChIPseeker` package
+
+Same as in previous step but using the `ChIPseeker` package for annotating the peaks.
+
+```{r chip_peak_seeker, eval=FALSE}
+library(ChIPseeker)
+for(i in seq(along=args)) {
+    peakAnno <- annotatePeak(infile1(args)[i], TxDb=txdb, verbose=FALSE)
+    df <- as.data.frame(peakAnno)
+    outpaths <- subsetWF(args , slot="output", subset=1, index=1)
+    write.table(df, outpaths[i], quote=FALSE, row.names=FALSE, sep="\t")
+}
+writeTargetsout(x=args, file="targets_peakanno.txt", step = 1, 
+                new_col = "FileName", new_col_output_index = 1, overwrite = TRUE )
+```
+
+Summary plots provided by the `ChIPseeker` package. Here applied only to one sample
+for demonstration purposes.
+
+```{r chip_peak_seeker_plots, eval=FALSE}
+peak <- readPeakFile(infile1(args)[1])
+covplot(peak, weightCol="X.log10.pvalue.")
+outpaths <- subsetWF(args , slot="output", subset=1, index=1)
+peakHeatmap(outpaths[1], TxDb=txdb, upstream=1000, downstream=1000, 
+            color="red")
+plotAvgProf2(outpaths[1], TxDb=txdb, upstream=1000, downstream=1000, 
+             xlab="Genomic Region (5'->3')", ylab = "Read Count Frequency")
+```
+
+# Count reads overlapping peaks
+
+The `countRangeset` function is a convenience wrapper to perform read counting
+iteratively over serveral range sets, here peak range sets. Internally,
+the read counting is performed with the `summarizeOverlaps` function from the 
+`GenomicAlignments` package. The resulting count tables are directly saved to 
+files, one for each peak set.
+
+```{r count_peak_ranges, eval=FALSE}
+library(GenomicRanges)
+dir_path <- system.file("extdata/cwl/count_rangesets", package="systemPipeR")
+args <- loadWF(targets = "targets_macs.txt", wf_file = "count_rangesets.cwl", 
+    input_file = "count_rangesets.yml", dir_path = dir_path)
+args <- renderWF(args, inputvars = c(FileName = "_FASTQ_PATH1_", SampleName = "_SampleName_"))
+
+## Bam Files
+targets <- system.file("extdata", "targetsPE_chip.txt", package="systemPipeR")
+dir_path <- system.file("extdata/cwl/bowtie2/bowtie2-pe", package="systemPipeR")
+args_bam <- loadWF(targets = targets, wf_file = "bowtie2-mapping-pe.cwl", 
+    input_file = "bowtie2-mapping-pe.yml", dir_path = dir_path)
+args_bam <- renderWF(args_bam, inputvars = c(FileName = "_FASTQ_PATH1_", SampleName = "_SampleName_"))
+args_bam <- output_update(args_bam, dir=FALSE, replace=TRUE, extension=c(".sam", ".bam"))
+outpaths <- subsetWF(args_bam, slot="output", subset=1, index=1)
+
+bfl <- BamFileList(outpaths, yieldSize=50000, index=character())
+countDFnames <- countRangeset(bfl, args, mode="Union", ignore.strand=TRUE)
+writeTargetsout(x=args, file="targets_countDF.txt", step = 1, 
+                new_col = "FileName", new_col_output_index = 1, overwrite = TRUE )
+```
+
+# Differential binding analysis
+
+The `runDiff` function performs differential binding analysis in batch mode for
+several count tables using `edgeR` or `DESeq2` [@Robinson2010-uk; @Love2014-sh].
+Internally, it calls the functions `run_edgeR` and `run_DESeq2`. It also returns 
+the filtering results and plots from the downstream `filterDEGs` function using 
+the fold change and FDR cutoffs provided under the `dbrfilter` argument.
+
+```{r diff_bind_analysis, eval=FALSE}
+dir_path <- system.file("extdata/cwl/rundiff", package="systemPipeR")
+args_diff <- loadWF(targets = "targets_countDF.txt", wf_file = "rundiff.cwl", 
+    input_file = "rundiff.yml", dir_path = dir_path)
+args_diff <- renderWF(args_diff, inputvars = c(FileName = "_FASTQ_PATH1_", SampleName = "_SampleName_"))
+
+cmp <- readComp(file=args_bam, format="matrix") 
+dbrlist <- runDiff(args=args_diff, diffFct=run_edgeR, 
+                   targets=targets.as.df(targets(args_bam)), cmp=cmp[[1]], 
+                   independent=TRUE, dbrfilter=c(Fold=2, FDR=1))
+writeTargetsout(x=args_diff, file="targets_rundiff.txt", step = 1, 
+                new_col = "FileName", new_col_output_index = 1, overwrite = TRUE )
+```
+
+# GO term enrichment analysis
+
+The following performs GO term enrichment analysis for each annotated peak set.
+
+```{r go_enrich, eval=FALSE}
+dir_path <- system.file("extdata/cwl/annotate_peaks", package="systemPipeR")
+args <- loadWF(targets = "targets_bam_ref.txt", wf_file = "annotate-peaks.cwl",
+    input_file = "annotate-peaks.yml", dir_path = dir_path)
+args <- renderWF(args, inputvars = c(FileName1 = "_FASTQ_PATH1_", FileName2 = "_FASTQ_PATH2_", SampleName = "_SampleName_"))
+
+args_anno <- loadWF(targets = "targets_macs.txt", wf_file = "annotate-peaks.cwl",
+    input_file = "annotate-peaks.yml", dir_path = dir_path)
+args_anno <- renderWF(args_anno, inputvars = c(FileName = "_FASTQ_PATH1_", SampleName = "_SampleName_"))
+annofiles <- subsetWF(args_anno, slot="output", subset=1, index=1)
+gene_ids <- sapply(names(annofiles), 
+                   function(x) unique(as.character
+                    (read.delim(annofiles[x])[,"geneId"])), simplify=FALSE)
+load("data/GO/catdb.RData")
+BatchResult <- GOCluster_Report(catdb=catdb, setlist=gene_ids, method="all", 
+                                id_type="gene", CLSZ=2, cutoff=0.9, 
+                                gocats=c("MF", "BP", "CC"), recordSpecGO=NULL)
+```
+
+# Motif analysis
+
+## Parse DNA sequences of peak regions from genome
+
+Enrichment analysis of known DNA binding motifs or _de novo_ discovery
+of novel motifs requires the DNA sequences of the identified peak
+regions. To parse the corresponding sequences from the reference genome,
+the `getSeq` function from the `Biostrings` package can be used. The 
+following example parses the sequences for each peak set and saves the 
+results to separate FASTA files, one for each peak set. In addition, the 
+sequences in the FASTA files are ranked (sorted) by increasing p-values 
+as expected by some motif discovery tools, such as `BCRANK`.
+
+```{r parse_peak_sequences, eval=FALSE}
+library(Biostrings); library(seqLogo); library(BCRANK)
+dir_path <- system.file("extdata/cwl/annotate_peaks", package="systemPipeR")
+args <- loadWF(targets = "targets_macs.txt", wf_file = "annotate-peaks.cwl",
+    input_file = "annotate-peaks.yml", dir_path = dir_path)
+args <- renderWF(args, inputvars = c(FileName = "_FASTQ_PATH1_", SampleName = "_SampleName_"))
+
+rangefiles <- infile1(args)
+for(i in seq(along=rangefiles)) {
+    df <- read.delim(rangefiles[i], comment="#")
+    peaks <- as(df, "GRanges")
+    names(peaks) <- paste0(as.character(seqnames(peaks)), "_", start(peaks), 
+                           "-", end(peaks))
+    peaks <- peaks[order(values(peaks)$X.log10.pvalue., decreasing=TRUE)]
+    pseq <- getSeq(FaFile("./data/tair10.fasta"), peaks)
+    names(pseq) <- names(peaks)
+    writeXStringSet(pseq, paste0(rangefiles[i], ".fasta")) 
+}
+```
+
+## Motif discovery with `BCRANK`
+
+The Bioconductor package `BCRANK` is one of the many tools available for 
+_de novo_ discovery of DNA binding motifs in peak regions of ChIP-Seq
+experiments. The given example applies this method on the first peak
+sample set and plots the sequence logo of the highest ranking motif.
+
+```{r bcrank_enrich, eval=FALSE}
+set.seed(0)
+BCRANKout <- bcrank(paste0(rangefiles[1], ".fasta"), restarts=25, 
+                    use.P1=TRUE, use.P2=TRUE)
+toptable(BCRANKout)
+topMotif <- toptable(BCRANKout, 1)
+weightMatrix <- pwm(topMotif, normalize = FALSE)
+weightMatrixNormalized <- pwm(topMotif, normalize = TRUE)
+pdf("results/seqlogo.pdf")
+seqLogo(weightMatrixNormalized)
+dev.off()
+```
+
+![](seqlogo.png)
+<div align="center">Figure 2: One of the motifs identified by `BCRANK`</div></br>
 
 # Version Information
 

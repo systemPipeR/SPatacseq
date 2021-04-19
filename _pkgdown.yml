@@ -1,14 +1,16 @@
-title: systemPipeATACseq
-url: https://www.dcassol.com/systemPipeATACseq/
+title: SPatacseq
+url: https://systempipe.org//SPatacseq/
 authors:
    Daniela Cassol:
      href: https://www.dcassol.com/
+   Thomas Girke:
+     href: http://girke.bioinformatics.ucr.edu/
 home:
   links:
   - text: Download from Github
-    href: https://github.com/dcassol/systemPipeATACseq/
+    href: https://github.com/dcassol/SPatacseq/
   - text: Report a bug
-    href: https://github.com/dcassol/systemPipeATACseq/issues
+    href: https://github.com/dcassol/SPatacseq/issues
 template:
   params:
     ganalytics: G-CCMXLYXWYV
