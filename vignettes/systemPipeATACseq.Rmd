@@ -43,7 +43,6 @@ knitr::opts_chunk$set(
 ```{r setup, echo=FALSE, message=FALSE, wwarning=FALSE, eval=TRUE}
 suppressPackageStartupMessages({
   library(systemPipeR)
-  
 })
 ```
 
@@ -335,8 +334,8 @@ write.table(read_statsDF, "results/alignStats_bowtie.xls", row.names = FALSE, qu
 
 The following shows the first four lines of the sample alignment stats file provided by the systemPipeR package. 
 ```{r read_stats_show, eval=TRUE}
-table <- system.file("extdata", "alignStats_bowtie.xls", package = "SPmirnaseq")
-showDT(read.table(table, header = TRUE))## system
+table <- system.file("extdata", "alignStats.xls", package = "systemPipeR")
+systemPipeR::showDT(read.table(table, header = TRUE))## system
 ```
 
 ### Alignment with _`BWA-MEM`_ (_e.g._ for VAR-Seq)
