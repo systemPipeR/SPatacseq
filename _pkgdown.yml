@@ -1,5 +1,5 @@
 title: SPatacseq
-url: https://systempipe.org//SPatacseq/
+url: https://systempipe.org/SPatacseq/
 authors:
    Daniela Cassol:
      href: https://www.dcassol.com/
@@ -8,9 +8,9 @@ authors:
 home:
   links:
   - text: Download from Github
-    href: https://github.com/dcassol/SPatacseq/
+    href: https://github.com/systemPipeR/SPatacseq/
   - text: Report a bug
-    href: https://github.com/dcassol/SPatacseq/issues
+    href: https://github.com/systemPipeR/SPatacseq/issues
 template:
   params:
     ganalytics: G-CCMXLYXWYV
