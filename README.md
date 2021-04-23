@@ -1,4 +1,4 @@
-# SPatacseq <img src="https://raw.githubusercontent.com/systemPipeR/systemPipeR.github.io/main/static/images/SPR-Workflows.png" height="139" />
+# SPatacseq  <img src="https://raw.githubusercontent.com/systemPipeR/systemPipeR.github.io/main/static/images/SPR-Workflows.png" align="right" height="139" />
 
 <!-- badges: start -->
 ![R-CMD-check](https://github.com/systemPipeR/SPatacseq/workflows/R-CMD-check/badge.svg)
