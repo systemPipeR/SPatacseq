@@ -6,15 +6,25 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 <!-- badges: end -->
 
-### Introduction
+### :construction: Under Development!
+
+> This pipeline is currently under development and does not have a stable release yet.
 
 ### Installation
-```r
-if (!requireNamespace("BiocManager", quietly = TRUE)) {
-  install.packages("BiocManager") }
-BiocManager::install("systemPipeR/SPatacseq"")
-```
 
+To install the package, please use the _`BiocManager::install`_ command:
+```
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("systemPipeR/SPatacseq", build_vignettes=TRUE, dependencies=TRUE)
+```
+To obtain the *systemPipeR* and *systemPipeRdata*, please run as follow:
+```
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("systemPipeR")
+BiocManager::install("systemPipeRdata")
+```
 ### Usage
 
 ### Pipeline summary

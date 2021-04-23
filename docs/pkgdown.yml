@@ -2,8 +2,8 @@ pandoc: '2.13'
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  systemPipeATACseq: systemPipeATACseq.html
-last_built: 2021-04-19T17:04Z
+  SPatacseq: SPatacseq.html
+last_built: 2021-04-23T16:03Z
 urls:
   reference: https://systempipe.org/SPatacseq//reference
   article: https://systempipe.org/SPatacseq//articles

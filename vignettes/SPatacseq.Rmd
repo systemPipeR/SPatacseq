@@ -1,5 +1,5 @@
 ---
-title: "systemPipeATACseq" 
+title: "SPatacseq" 
 author: "Author: Daniela Cassol (danielac@ucr.edu) and Thomas Girke (thomas.girke@ucr.edu)"
 date: "Last update: `r format(Sys.time(), '%d %B, %Y')`" 
 output:
@@ -9,7 +9,7 @@ output:
 package: systemPipeR
 vignette: |
   %\VignetteEncoding{UTF-8}
-  %\VignetteIndexEntry{WF: Workflow Template}
+  %\VignetteIndexEntry{SPatacseq Workflow Template}
   %\VignetteEngine{knitr::rmarkdown}
 fontsize: 14pt
 bibliography: bibtex.bib
@@ -28,7 +28,7 @@ word-wrap: initial !important;
 
 <!--
 - Compile from command-line
-Rscript -e "rmarkdown::render('SPatacseq.Rmd', c('BiocStyle::html_document'), clean=F); knitr::knit('SPatacseq.Rmd', tangle=TRUE)"; Rscript -e "rmarkdown::render('SPatacseq.Rmd', c('BiocStyle::pdf_document'))"
+Rscript -e "rmarkdown::render('SPatacseq.Rmd', c('BiocStyle::html_document'), clean=TRUE)"
 -->
 
 ```{r style, echo = FALSE, results = 'asis'}

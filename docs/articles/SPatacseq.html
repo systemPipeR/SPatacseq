@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>systemPipeATACseq • SPatacseq</title>
+<title>SPatacseq • SPatacseq</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="systemPipeATACseq">
-<meta property="og:description" content="systemPipeATACseq">
+<script src="../pkgdown.js"></script><meta property="og:title" content="SPatacseq">
+<meta property="og:description" content="SPatacseq">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SPatacseq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -50,7 +50,7 @@
   </a>
 </li>
 <li>
-  <a href="../articles/systemPipeATACseq.html">Get started</a>
+  <a href="../articles/SPatacseq.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -58,7 +58,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/systemPipeR/systemPipeATACseq/">
+  <a href="https://github.com/systemPipeR/SPatacseq/">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -73,22 +73,22 @@
 
       
 
-      </header><script src="systemPipeATACseq_files/header-attrs-2.7/header-attrs.js"></script><script src="systemPipeATACseq_files/htmlwidgets-1.5.3/htmlwidgets.js"></script><script src="systemPipeATACseq_files/jquery-3.5.1/jquery.min.js"></script><link href="systemPipeATACseq_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
-<script src="systemPipeATACseq_files/datatables-binding-0.18/datatables.js"></script><link href="systemPipeATACseq_files/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
-<link href="systemPipeATACseq_files/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet">
-<script src="systemPipeATACseq_files/dt-core-1.10.20/js/jquery.dataTables.min.js"></script><link href="systemPipeATACseq_files/dt-ext-fixedcolumns-1.10.20/css/fixedColumns.dataTables.min.css" rel="stylesheet">
-<script src="systemPipeATACseq_files/dt-ext-fixedcolumns-1.10.20/js/dataTables.fixedColumns.min.js"></script><link href="systemPipeATACseq_files/dt-ext-scroller-1.10.20/css/scroller.dataTables.min.css" rel="stylesheet">
-<script src="systemPipeATACseq_files/dt-ext-scroller-1.10.20/js/dataTables.scroller.min.js"></script><link href="systemPipeATACseq_files/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet">
-<script src="systemPipeATACseq_files/crosstalk-1.1.1/js/crosstalk.min.js"></script><div class="row">
+      </header><script src="SPatacseq_files/header-attrs-2.7/header-attrs.js"></script><script src="SPatacseq_files/htmlwidgets-1.5.3/htmlwidgets.js"></script><script src="SPatacseq_files/jquery-3.5.1/jquery.min.js"></script><link href="SPatacseq_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="SPatacseq_files/datatables-binding-0.18/datatables.js"></script><link href="SPatacseq_files/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="SPatacseq_files/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="SPatacseq_files/dt-core-1.10.20/js/jquery.dataTables.min.js"></script><link href="SPatacseq_files/dt-ext-fixedcolumns-1.10.20/css/fixedColumns.dataTables.min.css" rel="stylesheet">
+<script src="SPatacseq_files/dt-ext-fixedcolumns-1.10.20/js/dataTables.fixedColumns.min.js"></script><link href="SPatacseq_files/dt-ext-scroller-1.10.20/css/scroller.dataTables.min.css" rel="stylesheet">
+<script src="SPatacseq_files/dt-ext-scroller-1.10.20/js/dataTables.scroller.min.js"></script><link href="SPatacseq_files/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet">
+<script src="SPatacseq_files/crosstalk-1.1.1/js/crosstalk.min.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>systemPipeATACseq</h1>
+      <h1 data-toc-skip>SPatacseq</h1>
                         <h4 class="author">Author: Daniela Cassol (<a href="mailto:danielac@ucr.edu" class="email">danielac@ucr.edu</a>) and Thomas Girke (<a href="mailto:thomas.girke@ucr.edu" class="email">thomas.girke@ucr.edu</a>)</h4>
             
-            <h4 class="date">Last update: 19 April, 2021</h4>
+            <h4 class="date">Last update: 23 April, 2021</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/systemPipeR/systemPipeATACseq/blob/master/vignettes/systemPipeATACseq.Rmd"><code>vignettes/systemPipeATACseq.Rmd</code></a></small>
-      <div class="hidden name"><code>systemPipeATACseq.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/systemPipeR/SPatacseq/blob/master/vignettes/SPatacseq.Rmd"><code>vignettes/SPatacseq.Rmd</code></a></small>
+      <div class="hidden name"><code>SPatacseq.Rmd</code></div>
 
     </div>
 
@@ -104,7 +104,7 @@ word-wrap: initial !important;
 </style>
 <!--
 - Compile from command-line
-Rscript -e "rmarkdown::render('SPatacseq.Rmd', c('BiocStyle::html_document'), clean=F); knitr::knit('SPatacseq.Rmd', tangle=TRUE)"; Rscript -e "rmarkdown::render('SPatacseq.Rmd', c('BiocStyle::pdf_document'))"
+Rscript -e "rmarkdown::render('SPatacseq.Rmd', c('BiocStyle::html_document'), clean=TRUE)"
 --><script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function() {
   document.querySelector("h1").className = "title";
@@ -357,8 +357,8 @@ The function <em><code>seeFastq</code></em> computes the quality statistics and 
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"alignStats.xls"</span>, package <span class="op">=</span> <span class="st">"systemPipeR"</span><span class="op">)</span>
 <span class="fu">systemPipeR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/systemPipeR/man/showDT.html">showDT</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="va">table</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>  <span class="co">## system</span></code></pre></div>
-<div id="htmlwidget-f70a62afe4d06cae1f16" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-f70a62afe4d06cae1f16">{"x":{"filter":"none","extensions":["FixedColumns","Scroller"],"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18"],["M1A","M1B","A1A","A1B","V1A","V1B","M6A","M6B","A6A","A6B","V6A","V6B","M12A","M12B","A12A","A12B","V12A","V12B"],[192918,197484,189870,188854,198732,195542,197234,180904,183140,196578,194204,198414,199434,188954,187922,199790,193922,181006],[177961,159378,176055,147768,160115,184418,182469,162636,170258,179932,176857,176825,179722,162894,171326,173771,174180,157790],[92.2469650317752,80.7042595855867,92.7239690314426,78.2445698793777,80.5683030412817,94.3111965715805,92.5139681799284,89.901826383054,92.9660369116523,91.5321144787311,91.0676402133839,89.1192153779471,90.1160283602595,86.2082834975708,91.1686763657262,86.9768256669503,89.819618197007,87.1739058373756],[177961,159378,176055,147768,160115,184418,182469,162636,170258,179932,176857,176825,179722,162894,171326,173771,174180,157790],[92.2469650317752,80.7042595855867,92.7239690314426,78.2445698793777,80.5683030412817,94.3111965715805,92.5139681799284,89.901826383054,92.9660369116523,91.5321144787311,91.0676402133839,89.1192153779471,90.1160283602595,86.2082834975708,91.1686763657262,86.9768256669503,89.819618197007,87.1739058373756]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>FileName<\/th>\n      <th>Nreads2x<\/th>\n      <th>Nalign<\/th>\n      <th>Perc_Aligned<\/th>\n      <th>Nalign_Primary<\/th>\n      <th>Perc_Aligned_Primary<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"fixedColumns":true,"deferRender":true,"scrollY":200,"scroller":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-10ba681a8d8ca283aaf7" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-10ba681a8d8ca283aaf7">{"x":{"filter":"none","extensions":["FixedColumns","Scroller"],"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18"],["M1A","M1B","A1A","A1B","V1A","V1B","M6A","M6B","A6A","A6B","V6A","V6B","M12A","M12B","A12A","A12B","V12A","V12B"],[192918,197484,189870,188854,198732,195542,197234,180904,183140,196578,194204,198414,199434,188954,187922,199790,193922,181006],[177961,159378,176055,147768,160115,184418,182469,162636,170258,179932,176857,176825,179722,162894,171326,173771,174180,157790],[92.2469650317752,80.7042595855867,92.7239690314426,78.2445698793777,80.5683030412817,94.3111965715805,92.5139681799284,89.901826383054,92.9660369116523,91.5321144787311,91.0676402133839,89.1192153779471,90.1160283602595,86.2082834975708,91.1686763657262,86.9768256669503,89.819618197007,87.1739058373756],[177961,159378,176055,147768,160115,184418,182469,162636,170258,179932,176857,176825,179722,162894,171326,173771,174180,157790],[92.2469650317752,80.7042595855867,92.7239690314426,78.2445698793777,80.5683030412817,94.3111965715805,92.5139681799284,89.901826383054,92.9660369116523,91.5321144787311,91.0676402133839,89.1192153779471,90.1160283602595,86.2082834975708,91.1686763657262,86.9768256669503,89.819618197007,87.1739058373756]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>FileName<\/th>\n      <th>Nreads2x<\/th>\n      <th>Nalign<\/th>\n      <th>Perc_Aligned<\/th>\n      <th>Nalign_Primary<\/th>\n      <th>Perc_Aligned_Primary<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"fixedColumns":true,"deferRender":true,"scrollY":200,"scroller":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="alignment-with-bwa-mem-e-g--for-var-seq" class="section level3">
 <h3 class="hasAnchor">
@@ -764,87 +764,75 @@ Figure 2: One of the motifs identified by <code>BCRANK</code>
 ## [6] utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] systemPipeR_1.25.12         ShortRead_1.49.2           
+##  [1] systemPipeR_1.25.11         ShortRead_1.49.2           
 ##  [3] GenomicAlignments_1.27.2    SummarizedExperiment_1.21.3
 ##  [5] Biobase_2.51.0              MatrixGenerics_1.3.1       
 ##  [7] matrixStats_0.58.0          BiocParallel_1.25.5        
 ##  [9] Rsamtools_2.7.2             Biostrings_2.59.2          
 ## [11] XVector_0.31.1              GenomicRanges_1.43.4       
-## [13] GenomeInfoDb_1.27.11        IRanges_2.25.8             
-## [15] S4Vectors_0.29.15           BiocGenerics_0.37.1        
+## [13] GenomeInfoDb_1.27.11        IRanges_2.25.9             
+## [15] S4Vectors_0.29.15           BiocGenerics_0.37.2        
 ## [17] BiocStyle_2.19.2           
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] backports_1.2.1          BiocFileCache_1.99.5    
-##   [3] systemfonts_1.0.1        plyr_1.8.6              
-##   [5] lazyeval_0.2.2           splines_4.1.0           
-##   [7] crosstalk_1.1.1          ggplot2_3.3.3           
-##   [9] digest_0.6.27            htmltools_0.5.1.1       
-##  [11] fansi_0.4.2              magrittr_2.0.1          
-##  [13] checkmate_2.0.0          memoise_2.0.0           
-##  [15] BSgenome_1.59.2          base64url_1.4           
-##  [17] limma_3.47.12            annotate_1.69.2         
-##  [19] pkgdown_1.6.1            prettyunits_1.1.1       
-##  [21] jpeg_0.1-8.1             colorspace_2.0-0        
-##  [23] blob_1.2.1               rappdirs_0.3.3          
-##  [25] ggrepel_0.9.1            textshaping_0.3.3       
-##  [27] xfun_0.22                dplyr_1.0.5             
-##  [29] crayon_1.4.1             RCurl_1.98-1.3          
-##  [31] jsonlite_1.7.2           genefilter_1.73.1       
-##  [33] VariantAnnotation_1.37.1 brew_1.0-6              
-##  [35] survival_3.2-10          ape_5.4-1               
-##  [37] glue_1.4.2               gtable_0.3.0            
-##  [39] zlibbioc_1.37.0          DelayedArray_0.17.10    
-##  [41] V8_3.4.0                 scales_1.1.1            
-##  [43] pheatmap_1.0.12          DBI_1.1.1               
-##  [45] GGally_2.1.1             edgeR_3.33.3            
-##  [47] Rcpp_1.0.6               viridisLite_0.4.0       
-##  [49] xtable_1.8-4             progress_1.2.2          
-##  [51] tidytree_0.3.3           bit_4.0.4               
-##  [53] DT_0.18                  rsvg_2.1                
-##  [55] htmlwidgets_1.5.3        httr_1.4.2              
-##  [57] RColorBrewer_1.1-2       ellipsis_0.3.1          
-##  [59] pkgconfig_2.0.3          reshape_0.8.8           
-##  [61] XML_3.99-0.6             sass_0.3.1              
-##  [63] dbplyr_2.1.1             locfit_1.5-9.4          
-##  [65] utf8_1.2.1               later_1.1.0.1           
-##  [67] tidyselect_1.1.0         rlang_0.4.10            
-##  [69] AnnotationDbi_1.53.1     munsell_0.5.0           
-##  [71] tools_4.1.0              cachem_1.0.4            
-##  [73] generics_0.1.0           RSQLite_2.2.6           
-##  [75] evaluate_0.14            stringr_1.4.0           
-##  [77] fastmap_1.1.0            yaml_2.2.1              
-##  [79] ragg_1.1.2               ggtree_2.5.2            
-##  [81] knitr_1.32               bit64_4.0.5             
-##  [83] fs_1.5.0                 purrr_0.3.4             
-##  [85] KEGGREST_1.31.1          nlme_3.1-152            
-##  [87] mime_0.10                formatR_1.9             
-##  [89] aplot_0.0.6              biomaRt_2.47.7          
-##  [91] compiler_4.1.0           plotly_4.9.3            
-##  [93] filelock_1.0.2           curl_4.3                
-##  [95] png_0.1-7                treeio_1.15.6           
-##  [97] tibble_3.1.0             geneplotter_1.69.0      
-##  [99] bslib_0.2.4              stringi_1.5.3           
-## [101] highr_0.8                GenomicFeatures_1.43.8  
-## [103] desc_1.3.0               lattice_0.20-41         
-## [105] Matrix_1.3-2             glmpca_0.2.0            
-## [107] vctrs_0.3.7              pillar_1.6.0            
-## [109] lifecycle_1.0.0          BiocManager_1.30.12     
-## [111] jquerylib_0.1.3          data.table_1.14.0       
-## [113] bitops_1.0-6             httpuv_1.5.5            
-## [115] patchwork_1.1.1          rtracklayer_1.51.5      
-## [117] R6_2.5.0                 BiocIO_1.1.2            
-## [119] latticeExtra_0.6-29      hwriter_1.3.2           
-## [121] promises_1.2.0.1         bookdown_0.21           
-## [123] codetools_0.2-18         MASS_7.3-53.1           
-## [125] assertthat_0.2.1         DESeq2_1.31.18          
-## [127] rprojroot_2.0.2          rjson_0.2.20            
-## [129] withr_2.4.1              batchtools_0.9.15       
-## [131] GenomeInfoDbData_1.2.4   hms_1.0.0               
-## [133] grid_4.1.0               tidyr_1.1.3             
-## [135] DOT_0.1                  rmarkdown_2.7           
-## [137] rvcheck_0.1.8            Rtsne_0.15              
-## [139] shiny_1.6.0              restfulr_0.0.13</code></pre>
+##   [1] colorspace_2.0-0         rjson_0.2.20            
+##   [3] hwriter_1.3.2            ellipsis_0.3.1          
+##   [5] rprojroot_2.0.2          fs_1.5.0                
+##   [7] DT_0.18                  bit64_4.0.5             
+##   [9] AnnotationDbi_1.53.1     fansi_0.4.2             
+##  [11] codetools_0.2-18         cachem_1.0.4            
+##  [13] knitr_1.32               jsonlite_1.7.2          
+##  [15] annotate_1.69.2          dbplyr_2.1.1            
+##  [17] png_0.1-7                shiny_1.6.0             
+##  [19] BiocManager_1.30.12      compiler_4.1.0          
+##  [21] httr_1.4.2               backports_1.2.1         
+##  [23] assertthat_0.2.1         Matrix_1.3-2            
+##  [25] fastmap_1.1.0            limma_3.47.12           
+##  [27] later_1.1.0.1            formatR_1.9             
+##  [29] htmltools_0.5.1.1        prettyunits_1.1.1       
+##  [31] tools_4.1.0              gtable_0.3.0            
+##  [33] glue_1.4.2               GenomeInfoDbData_1.2.4  
+##  [35] dplyr_1.0.5              rsvg_2.1.1              
+##  [37] batchtools_0.9.15        rappdirs_0.3.3          
+##  [39] V8_3.4.0                 Rcpp_1.0.6              
+##  [41] jquerylib_0.1.3          pkgdown_1.6.1           
+##  [43] vctrs_0.3.7              rtracklayer_1.51.5      
+##  [45] crosstalk_1.1.1          xfun_0.22               
+##  [47] stringr_1.4.0            mime_0.10               
+##  [49] lifecycle_1.0.0          restfulr_0.0.13         
+##  [51] XML_3.99-0.6             edgeR_3.33.3            
+##  [53] scales_1.1.1             zlibbioc_1.37.0         
+##  [55] BSgenome_1.59.2          VariantAnnotation_1.37.1
+##  [57] promises_1.2.0.1         ragg_1.1.2              
+##  [59] hms_1.0.0                RColorBrewer_1.1-2      
+##  [61] yaml_2.2.1               curl_4.3                
+##  [63] memoise_2.0.0            ggplot2_3.3.3           
+##  [65] sass_0.3.1               biomaRt_2.47.7          
+##  [67] latticeExtra_0.6-29      stringi_1.5.3           
+##  [69] RSQLite_2.2.7            highr_0.9               
+##  [71] BiocIO_1.1.2             desc_1.3.0              
+##  [73] checkmate_2.0.0          GenomicFeatures_1.43.8  
+##  [75] filelock_1.0.2           DOT_0.1                 
+##  [77] rlang_0.4.10             pkgconfig_2.0.3         
+##  [79] systemfonts_1.0.1        bitops_1.0-6            
+##  [81] evaluate_0.14            lattice_0.20-41         
+##  [83] purrr_0.3.4              htmlwidgets_1.5.3       
+##  [85] bit_4.0.4                tidyselect_1.1.0        
+##  [87] magrittr_2.0.1           bookdown_0.22           
+##  [89] R6_2.5.0                 generics_0.1.0          
+##  [91] base64url_1.4            DelayedArray_0.17.10    
+##  [93] DBI_1.1.1                pillar_1.6.0            
+##  [95] withr_2.4.2              KEGGREST_1.31.1         
+##  [97] RCurl_1.98-1.3           tibble_3.1.1            
+##  [99] crayon_1.4.1             utf8_1.2.1              
+## [101] BiocFileCache_1.99.6     rmarkdown_2.7           
+## [103] jpeg_0.1-8.1             progress_1.2.2          
+## [105] locfit_1.5-9.4           grid_4.1.0              
+## [107] data.table_1.14.0        blob_1.2.1              
+## [109] digest_0.6.27            xtable_1.8-4            
+## [111] httpuv_1.5.5             brew_1.0-6              
+## [113] textshaping_0.3.3        munsell_0.5.0           
+## [115] bslib_0.2.4</code></pre>
 </div>
 <div id="funding" class="section level1">
 <h1 class="hasAnchor">
