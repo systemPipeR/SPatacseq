@@ -63,7 +63,7 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
-          BiocManager::install("systemPipeR/SPrnaseq")
+          BiocManager::install("systemPipeR/SPatacseq")
         shell: Rscript {0}
 
       - name: Check
